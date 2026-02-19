@@ -15,6 +15,8 @@ void main(List<String> arguments) {
   // TODO initialiser la grille
 
   final penVert = AnsiPen()..green();
+  final penBleu = AnsiPen()..blue();
+  final penRouge = AnsiPen()..red();
 
   var grille = genererGrille(largeurGrille, hauteurGrille, nombreMines);
   var cellulesActives = List<bool>.generate(tailleGrille, (i) => false);
@@ -28,7 +30,15 @@ void main(List<String> arguments) {
     if (choixUtilisateur != null) {
       print("dernier coup: ${penVert(choixUtilisateur)}");
     }
-    afficherGrille(largeurGrille, hauteurGrille, grille, cellulesActives);
+    afficherGrille(
+      largeurGrille,
+      hauteurGrille,
+      grille,
+      cellulesActives,
+      penVert,
+      penBleu,
+      penRouge,
+    );
     // TODO informer l'utilisateur qu'il peut jouer
     stdout.write(penVert("Saisissez votre coup (cl) ou q pour quitter: "));
     choixUtilisateur = stdin.readLineSync();
@@ -46,12 +56,24 @@ void main(List<String> arguments) {
 
     var col = choixUtilisateur.codeUnitAt(0) - 97;
     var ligne = int.parse(choixUtilisateur[1]) - 1;
+
+    if (col < 0) {
+      stdout.writeln("[Erreur]: choix invalide");
+      continue;
+    }
+
     var index = ligne * largeurGrille + col;
 
     if (index > tailleGrille) {
       stdout.writeln("[Erreur]: choix invalide");
       continue;
     }
-    cellulesActives[index] = true;
+    activerCellules(
+      index,
+      largeurGrille,
+      hauteurGrille,
+      grille,
+      cellulesActives,
+    );
   }
 }
